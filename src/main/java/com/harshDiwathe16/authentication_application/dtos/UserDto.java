@@ -1,8 +1,6 @@
 package com.harshDiwathe16.authentication_application.dtos;
 
 import com.harshDiwathe16.authentication_application.entity.Provider;
-import com.harshDiwathe16.authentication_application.entity.Role;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
@@ -17,8 +15,9 @@ import java.util.UUID;
 @Builder
 public class UserDto
 {
+    public Boolean isEnable;
     private UUID id;
-
+    
     private String email;
 
     private String name;
@@ -27,7 +26,7 @@ public class UserDto
 
     private String image;
 
-    private Boolean enable = true;
+    private boolean enable = true;
 
     private Instant createdAt = Instant.now();
 

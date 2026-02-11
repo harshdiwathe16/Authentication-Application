@@ -31,7 +31,7 @@ public class User
 
     private String image;
 
-    private Boolean enable = true;
+    private boolean enable = true;
 
     private Instant createdAt = Instant.now();
 
