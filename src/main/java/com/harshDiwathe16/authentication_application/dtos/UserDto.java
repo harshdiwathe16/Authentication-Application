@@ -1,8 +1,6 @@
 package com.harshDiwathe16.authentication_application.dtos;
 
 import com.harshDiwathe16.authentication_application.entity.Provider;
-import com.harshDiwathe16.authentication_application.entity.Role;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
@@ -18,7 +16,7 @@ import java.util.UUID;
 public class UserDto
 {
     private UUID id;
-
+    
     private String email;
 
     private String name;
