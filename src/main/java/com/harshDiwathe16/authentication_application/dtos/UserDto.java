@@ -15,7 +15,6 @@ import java.util.UUID;
 @Builder
 public class UserDto
 {
-    public Boolean isEnable;
     private UUID id;
     
     private String email;
