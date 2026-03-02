@@ -1,34 +1,30 @@
-server:
-  port: 8081
+  server:
+    port: 8081
 
-spring:
-  application:
-    name: authentication-application
+  spring:
+    application:
+      name: authentication-application
 
-  datasource:
-    url: jdbc:mysql://localhost:3306/authentication_application
-    username: root
-    password: root
+    datasource:
+      url: jdbc:mysql://localhost:3306/authentication_application
+      username: root
+      password: root
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
+    jpa:
       hibernate:
-        format_sql: true
-    show-sql: true
+        ddl-auto: update
+      properties:
+        hibernate:
+          format_sql: true
+      show-sql: true
 
-logging:
-  level:
-    org.springframework.security: DEBUG
+  logging:
+    level:
+      org.springframework.security: DEBUG
 
-security:
-  jwt:
-    secret: ${JWT_SECRET:8c7d2a1f6e9b4c5d7f0a3b8e1d2f9c6a5b4e3d2f1a0b9c8d7e6f5a4b3c2d1}
-    issuer: ${JWT_ISSUER:api.substring.com}
-    access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS:3600}
-    refresh-ttl-seconds: ${JWT_REFRESH_TTL_SECONDS:86400}
-    refresh-token-cookie-name: ${JWT_REFRESH_COOKIE_NAME:refreshToken}
-    cookie-secure: ${JWT_COOKIE_SECURE:true}
-    cookie-http-only: ${JWT_HTTP_COOKIE_ONLY:true}
-    cookie-same-site: ${JWT_COOKIE_SAME_SITE:lax}
+  security:
+    jwt:
+      secret: 8c7d2a1f6e9b4c5d7f0a3b8e1d2f9c6a5b4e3d2f1a0b9c8d7e6f5a4b3c2d1a9b8c7d6e5f4a3b2c1d0
+      issuer: api.substring.com
+      access-ttl-seconds: 3600
+      refresh-ttl-seconds: 86400

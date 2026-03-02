@@ -1,27 +1,63 @@
 package com.harshDiwathe16.authentication_application.config;
 
+import com.harshDiwathe16.authentication_application.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
 
 @Configuration
-public class SecurityConfig
-{
+@RequiredArgsConstructor
+public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
-    {
-        http.csrf(AbstractHttpConfigurer :: disable);
-        http.authorizeHttpRequests(authorizeHttpRequests ->
-                authorizeHttpRequests.requestMatchers("/api/v1/auth/register-user").permitAll()
-                        .requestMatchers("/api/v1/auth/login").permitAll()
-                        .anyRequest().authenticated()
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http.csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .httpBasic(Customizer.withDefaults());
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers("/api/v1/auth/register-user").permitAll()
+                                .requestMatchers("/api/v1/auth/login-user").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex ->
+                        ex.authenticationEntryPoint((request, response, authException) -> {
+
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+
+                            Map<String, String> errorMap = Map.of(
+                                    "statusCode", "401",
+                                    "status", "401",
+                                    "message",
+                                    "unauthorized access " + authException.getMessage()
+                            );
+
+                             ObjectMapper objectMapper = new ObjectMapper();
+                            response.getWriter()
+                                    .write(objectMapper.writeValueAsString(errorMap));
+                        })
+                )
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -31,13 +67,8 @@ public class SecurityConfig
         return new BCryptPasswordEncoder();
     }
 
-
-//    public UserDetailsService users()
-//    {
-//        User.UserBuilder userBuilder = User.withDefaultPasswordEncoder();
-//
-//        UserDetails user1 = userBuilder.username("Harsh").password("Harsh").roles("Admin").build();
-//
-//        return new InMemoryUserDetailsManager(user1);
-//    }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 }
