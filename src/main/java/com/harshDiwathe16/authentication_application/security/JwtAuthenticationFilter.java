@@ -3,7 +3,9 @@ package com.harshDiwathe16.authentication_application.security;
 import com.harshDiwathe16.authentication_application.helpers.UserHelper;
 import com.harshDiwathe16.authentication_application.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -90,8 +92,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             }
                         });
 
-            } catch (JwtException e) {
-                e.printStackTrace();
+            }
+            catch (ExpiredJwtException e)
+            {
+                request.setAttribute("error", "Token Expired");
+            } catch (MalformedJwtException e)
+            {
+                request.setAttribute("error", "Invalid Token");
+//                e.printStackTrace();
+            } catch (JwtException e)
+            {
+                request.setAttribute("error", "Invalid Token");
+//                e.printStackTrace();
+            }
+            catch (Exception e)
+            {
+                request.setAttribute("error", "Invalid Token");
             }
         }
 
